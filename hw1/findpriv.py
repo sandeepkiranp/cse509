@@ -1,25 +1,29 @@
 import argparse
 import sys
 import os
+import stat
 from stat import *
 
 execcount = 0
 filecount = 0
-hello = 0
-def walktree(top):
-    '''recursively descend the directory tree rooted at top,
-       calling the callback function for each regular file'''
-    global filecount, execcount
+setuid_files = []
+capabilities_files = []
+def walktree(top, setuid, capabilities):
+    '''recursively descend the directory tree rooted at top'''
+    global filecount, execcount, setuid_files, capabilities_files
     for f in os.listdir(top):
         pathname = os.path.join(top, f)
         mode = os.lstat(pathname).st_mode
         if S_ISDIR(mode):
             # It's a directory, recurse into it
-            walktree(pathname)
+            walktree(pathname, setuid, capabilities)
         else:
-            # Unknown file type, print a message
             if os.access(pathname, os.X_OK):
-                 execcount +=1
+                execcount +=1
+                if setuid and (mode & stat.S_ISUID):
+                    setuid_files.append(pathname)
+                if capabilities:
+                    print ('append to the capabilities list if capabilities is set')
             filecount +=1
 
 parser = argparse.ArgumentParser()
@@ -42,6 +46,9 @@ print ('Argument setuid:', options.setuid)
 print ('Argument capabilities:', options.capabilities)
 print ('Argument path:', options.path)
 
-walktree(options.path)
+walktree(options.path, options.setuid, options.capabilities)
 print('Scanned ' + str(filecount) + ' files, found ' + str(execcount) + ' executables')
+print('setuid executables:')
+for x in setuid_files:
+    print(x + '\n')
 
