@@ -5,7 +5,7 @@ from stat import *
 
 execcount = 0
 filecount = 0
-
+hello = 0
 def walktree(top):
     '''recursively descend the directory tree rooted at top,
        calling the callback function for each regular file'''
