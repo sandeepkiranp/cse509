@@ -7,7 +7,7 @@ from stat import *
 execcount = 0
 filecount = 0
 setuid_files = []
-capabilities_files = []
+capabilities_files = {}
 def walktree(top, setuid, capabilities):
     '''recursively descend the directory tree rooted at top'''
     global filecount, execcount, setuid_files, capabilities_files
@@ -23,7 +23,12 @@ def walktree(top, setuid, capabilities):
                 if setuid and (mode & stat.S_ISUID):
                     setuid_files.append(pathname)
                 if capabilities:
-                    print ('append to the capabilities list if capabilities is set')
+                    import subprocess
+                    result = subprocess.run(['getcap', pathname], stdout=subprocess.PIPE)
+                    if result.stdout.decode('ascii'):
+                        output = result.stdout.decode('ascii')
+                        print('append to the capabilities list if capabilities is set' + pathname + ' ' + output)
+                        capabilities_files[output.split()[0]] = output.split()[1].split('=')[0]
             filecount +=1
 
 parser = argparse.ArgumentParser()
@@ -51,4 +56,7 @@ print('Scanned ' + str(filecount) + ' files, found ' + str(execcount) + ' execut
 print('setuid executables:')
 for x in setuid_files:
     print(x + '\n')
+print('capability-aware executables:')
+for x in capabilities_files.keys():
+    print(x + '\t' + capabilities_files[x] + '\n')
 
