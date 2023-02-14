@@ -20,13 +20,13 @@ def walktree(top, setuid, capabilities):
                     # It's a directory, recurse into it
                     walktree(pathname, setuid, capabilities)
                 else:
-                    if os.access(pathname, os.X_OK):
+                    if (mode & S_IXUSR or mode & S_IXGRP or mode & S_IXOTH) :
                         execcount +=1
-                        if setuid and (mode & stat.S_ISUID):
+                        if setuid and (mode & stat.S_ISUID or mode & stat.S_ISGID):
                             setuid_files.append(pathname)
                         if capabilities:
                             import subprocess
-                            result = subprocess.run(['getcap', pathname], stdout=subprocess.PIPE)
+                            result = subprocess.run(['getcap', pathname], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
                             if result.stdout.decode('ascii'):
                                 output = result.stdout.decode('ascii')
                                 capabilities_files[output.split()[0]] = output.split()[1].split('=')[0]
