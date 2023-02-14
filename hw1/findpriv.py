@@ -22,7 +22,7 @@ def walktree(top, setuid, capabilities):
                 else:
                     if (mode & S_IXUSR or mode & S_IXGRP or mode & S_IXOTH) :
                         execcount +=1
-                        if setuid and (mode & stat.S_ISUID or mode & stat.S_ISGID):
+                        if setuid and (mode & stat.S_ISUID):
                             setuid_files.append(pathname)
                         if capabilities:
                             import subprocess
