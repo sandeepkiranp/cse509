@@ -27,7 +27,7 @@ def walktree(top, setuid, capabilities):
                         if capabilities:
                             import subprocess
                             result = subprocess.run(['getcap', pathname], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
-                            if result.stdout.decode('ascii'):
+                            if result.stdout:
                                 output = result.stdout.decode('ascii')
                                 capabilities_files[output.split()[0]] = output.split()[1].split('=')[0]
                     filecount +=1
@@ -63,5 +63,5 @@ for x in setuid_files:
     print(x)
 options.capabilities and print('capability-aware executables:')
 for x in capabilities_files.keys():
-    print(x + '\t' + capabilities_files[x])
+    print(x.ljust(20) + '\t' + capabilities_files[x])
 
