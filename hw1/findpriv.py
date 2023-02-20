@@ -52,6 +52,8 @@ if not options.setuid and not options.capabilities:
     options.setuid = True
     options.capabilities = True
 
+options.path = os.path.abspath(options.path)
+
 #print ('Argument setuid:', options.setuid)
 #print ('Argument capabilities:', options.capabilities)
 #print ('Argument path:', options.path)

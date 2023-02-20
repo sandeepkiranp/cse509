@@ -1,0 +1,46 @@
+The findpriv program has been implemented in python. The following text describes the details of the program logic.
+
+1. The input arguments of the program are parsed using argparse.ArgumentParser(). Default values are then properly set.
+2. The "walktree" method scans the input directory looking for files and directories using os.listdir() method.
+3. I then extract the mode of the file using lstat(). If a directory is found (S_ISDIR), the method recursively calls itself with the new directory.
+4. For any other type of file, I first check if the execute permissions are set on the file. The execute permission could be for the user, group or other fields.
+5. If set, I increment the execute file count and the total scanned file count. If not, I only increment the total scan count.
+6. For an executable, I check if the setuid bit is set using S_ISUID flag on the mode. If so, I add the file name to the setuid_files list.
+7. Using subprocess.run, I run the "getcap" utility on the executable to capture its output and check if the capabilities are set for it. If yes, I parse the capabilities and store the filename and its capabilities in the capabilities_files dictionary.
+8. Any exceptions during the above process are ignored.
+9. In the end, I print the total files scanned, total executables found, the setuid executables, the executables which have capabilities set along with their capabilities and exit. 
+
+Sampel Run
+==========
+The program has to be invoked using python3 as follows.
+
+$ python findpriv.py -p /usr/bin   
+Scanned 3158 files, found 3158 executables
+setuid executables:
+/usr/bin/su
+/usr/bin/fusermount3
+/usr/bin/kismet_cap_ubertooth_one
+/usr/bin/kismet_cap_nrf_mousejack
+/usr/bin/kismet_cap_linux_bluetooth
+/usr/bin/kismet_cap_nxp_kw41z
+/usr/bin/umount
+/usr/bin/sudo
+/usr/bin/passwd
+/usr/bin/gpasswd
+/usr/bin/chsh
+/usr/bin/kismet_cap_linux_wifi
+/usr/bin/chfn
+/usr/bin/kismet_cap_nrf_52840
+/usr/bin/newgrp
+/usr/bin/ntfs-3g
+/usr/bin/pkexec
+/usr/bin/kismet_cap_ti_cc_2531
+/usr/bin/kismet_cap_nrf_51822
+/usr/bin/kismet_cap_ti_cc_2540
+/usr/bin/kismet_cap_rz_killerbee
+/usr/bin/mount
+capability-aware executables:
+/usr/bin/ping           cap_net_raw
+/usr/bin/dumpcap        cap_net_admin,cap_net_raw
+/usr/bin/fping          cap_net_raw
+
