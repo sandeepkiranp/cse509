@@ -20,7 +20,10 @@ def walktree(top, setuid, capabilities):
                     # It's a directory, recurse into it
                     walktree(pathname, setuid, capabilities)
                 else:
-                    if (mode & S_IXUSR or mode & S_IXGRP or mode & S_IXOTH) :
+                    if S_ISLNK(mode):
+                        # not following links
+                        pass
+                    elif (mode & S_IXUSR or mode & S_IXGRP or mode & S_IXOTH) :
                         execcount +=1
                         if setuid and (mode & stat.S_ISUID):
                             setuid_files.append(pathname)

@@ -3,7 +3,7 @@ The findpriv program has been implemented in python. The following text describe
 1. The input arguments of the program are parsed using argparse.ArgumentParser(). Default values are then properly set.
 2. The "walktree" method scans the input directory looking for files and directories using os.listdir() method.
 3. I then extract the mode of the file using lstat(). If a directory is found (S_ISDIR), the method recursively calls itself with the new directory.
-4. For any other type of file, I first check if the execute permissions are set on the file. The execute permission could be for the user, group or other fields.
+4. For any other type of file (other than a symbolic link, which I am not resolving), I first check if the execute permissions are set on the file. The execute permission could be for the user, group or other fields.
 5. If set, I increment the execute file count and the total scanned file count. If not, I only increment the total scan count.
 6. For an executable, I check if the setuid bit is set using S_ISUID flag on the mode. If so, I add the file name to the setuid_files list.
 7. Using subprocess.run, I run the "getcap" utility on the executable to capture its output and check if the capabilities are set for it. If yes, I parse the capabilities and store the filename and its capabilities in the capabilities_files dictionary.
